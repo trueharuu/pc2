@@ -118,5 +118,5 @@ export const Level = {
 }
 
 export const tracing = new Tracing(
-  Level.Info
+  process.env.TRACING?.toUpperCase() || Level.Info
 );

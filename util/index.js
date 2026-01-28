@@ -4,7 +4,7 @@ const fs = require('fs');
 const { tracing } = require('./tracing.js');
 const hydra = child_process.spawn('./hydra.out', ['-d', '-w'], {cwd:process.cwd()});
 
-console.log('ARGV', process.argv);
+tracing.debug('ARGV', process.argv);
 
 // console.log(tracing.)
 let resultResolve = null;
@@ -90,10 +90,12 @@ const qs = permutations(SECOND.split(''), 4).map((a) => a.join(''));
 const ps = permutations(ORDER.split(''), 3).map((a) => a.join(''));
 
 async function main() {
-    tracing.thread('MAIN').info('waiting for hydra');
+    tracing.thread('MAIN').warn('waiting for hydra');
     await waitForStartup();
     // tracing.thread('MAIN').info('Hydra started, processing queues...');
     
+    const iz = Date.now();
+    let tw = 0;
     for (const q of qs) {
         for (const p of ps) {
             // tracing.info(`processing ${q} ${p}`);
@@ -102,12 +104,13 @@ async function main() {
             const weight = await waitForResult();
             const di = Date.now() - i;
             const file = fs.readFileSync('./tree_data.js', 'utf-8')
+            tw += parseInt(weight);
 
             await fs.promises.mkdir(`../data_2/${q}`, { recursive: true });
             await fs.promises.writeFile(`../data_2/${q}/${p}.js`, `// ${q}-${p}=${weight}\n${file}`);
             tracing.thread(q).info(`saved ../data_2/${q}/${p}.js [${weight}] in ${di} ms`);
         }
-        tracing.thread('MAIN').warn(`completed queue ${q}`);
+        tracing.thread('MAIN').warn(`completed queue ${q} in ${Date.now() - iz} ms [${tw}]`);
     }
     hydra.stdin.end();
 }
