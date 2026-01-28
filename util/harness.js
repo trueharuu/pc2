@@ -5,5 +5,5 @@ const queues = fs.readFileSync('./queues.txt', 'utf-8').trim().split('\n').map(l
 
 for (const queue of queues) {
     // fs.mkdirSync(`./thread/${queue}`, { recursive: true });
-    child_process.spawn('node', ['./index.js', queue], {stdio: 'inherit'});
+    child_process.spawnSync('node', ['./index.js', queue], {stdio: 'inherit'});
 }
