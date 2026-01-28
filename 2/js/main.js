@@ -156,7 +156,9 @@ async function main() {
         if (queue.length != 7) {
             throw new Error("Invalid queue in hash");
         }
-        const { init_hash, data } = await load_data(`../data/${queue}.js`);
+        console.log(`open ../data_2/${queue.slice(0,4)}/${queue.slice(4)}`);
+        const { init_hash, data } = await load_data(`../data_2/${queue.slice(0,4)}/${queue.slice(4)}.js`);
+        console.log(init_hash, data);
         ih = init_hash;
         da = data;
     } catch (error) {
@@ -164,8 +166,9 @@ async function main() {
         for (let i = 0; i < 100; i++) {
             try {
                 queue = prompt("queue", "TIJLOSZ").toUpperCase();
+                console.log(`open ../data_2/${queue.slice(0,4)}/${queue.slice(4)}`);
                 const { init_hash, data } = await load_data(
-                    `../data/${queue}.js`,
+                    `../data_2/${queue.slice(0,4)}/${queue.slice(4)}.js`,
                 );
                 ih = init_hash;
                 da = data;
