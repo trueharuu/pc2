@@ -98,17 +98,15 @@ async function main() {
     let tw = 0;
     for (const q of qs) {
         for (const p of ps) {
+            const path = `../data_2/${q}/${p}.js`;
             // tracing.info(`processing ${q} ${p}`);
-            hydra.stdin.write(`${q}${p} 4\n`);
+            hydra.stdin.write(`-T ${path} ${q}${p} 4\n`);
             const i = Date.now();
             const weight = await waitForResult();
             const di = Date.now() - i;
-            const file = fs.readFileSync('./tree_data.js', 'utf-8')
             tw += parseInt(weight);
 
-            await fs.promises.mkdir(`../data_2/${q}`, { recursive: true });
-            await fs.promises.writeFile(`../data_2/${q}/${p}.js`, `// ${q}-${p}=${weight}\n${file}`);
-            tracing.thread(q).info(`saved ../data_2/${q}/${p}.js [${weight}] in ${di} ms`);
+            tracing.thread(SECOND).info(`saved ${path} [${weight}] in ${di} ms`);
         }
         tracing.thread('MAIN').warn(`completed queue ${q} in ${Date.now() - iz} ms [${tw}]`);
     }
